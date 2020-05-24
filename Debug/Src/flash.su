@@ -1,0 +1,6 @@
+flash.c:50:6:Flash_Sector11_Erase	8	static
+flash.c:62:6:Flash_WriteTest	8	static
+flash.c:72:15:Flash_ReadWord	0	static
+flash.c:77:15:Flash_ReadByte	8	static
+flash.c:94:6:Flash_Write	24	static
+flash.c:113:6:flash_Erase	8	static

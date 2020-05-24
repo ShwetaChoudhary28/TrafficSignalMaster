@@ -1,0 +1,4 @@
+eeprom.c:22:6:EEPROM_WriteByte	32	static
+eeprom.c:28:15:EEPROM_ReadByte	24	static
+eeprom.c:35:6:EEPROM_WriteArray	24	static
+eeprom.c:46:6:EEPROM_ReadArray	24	static
