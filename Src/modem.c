@@ -3565,7 +3565,7 @@ EEPROM_WriteArray(planDetailsArray,counterOfPlan,eepromAddress);
 //clearReadBytes();
 
 
-//clearPlanDetailsArrayBuffer();//------------------commented because eeprom was not available
+//clearPlanDetailsArrayBuffer();//------------------commented because eeprom was not available to enable eeprom do check getCurrentPlanTotalNoOfPhases();
 //EEPROM_ReadArray(planDetailsArray,349,eepromAddress);//------------------commented because eeprom was not available
 
 
