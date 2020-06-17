@@ -3,7 +3,9 @@
 #include <string.h>
 
 #define Base_Address 0x080E0000
-
+#define ADDR_FLASH_SECTOR_11    ((uint32_t)0x080E0000) /* Base @ of Sector 11, 128 Kbytes */
+#define ADDR_FLASH_SECTOR_10    ((uint32_t)0x080C0000) /* Base @ of Sector 10, 128 Kbytes */
+#define ADDR_FLASH_SECTOR_9     ((uint32_t)0x080A0000) /* Base @ of Sector 9, 128 Kbytes */
 RTC_TimeTypeDef sTime;
 RTC_DateTypeDef sDate;
 extern uint8_t RecMsg2[250];
@@ -376,6 +378,7 @@ void resetVariables();
 /*-----------flash functions---------start-----*/
 extern void Flash_Write(uint32_t Address,uint8_t *byteToWrite,int length );
 extern unsigned char Flash_ReadByte(uint32_t Address,uint8_t *byteToRead,int length);
+extern void flash_Erase();
 /*-----------flash functions---------end-----*/
 void sendData();
 void countDown();
@@ -385,6 +388,8 @@ int function18();
 void extractSlaveInfo();
 
 void  populatePrimaryHVSecondaryHV();
+
+
 
 
 void clearframe() {
@@ -2297,7 +2302,9 @@ void program3() {
 	f_unlink ("mapPhase.txt");
 	f_unlink ("SlaveD.txt");
 	/*----------delete the existing file from SD card before new programming (END)---- */
-
+	/*----------delete the existing data from flash-begin-------------*/
+	flash_Erase();
+	/*----------delete the existing data from flash-end-------------*/
     /*----------Programming -------------*/
 	while (1) {
 		switch (temp) {
@@ -3125,7 +3132,7 @@ int function_10() {
 //	junctionId=1;
 //	programVersionNo=71;
 	int seekCnt=0;
-
+    uint32_t flashAdd=ADDR_FLASH_SECTOR_10;
 //	noOfPlans = noOfPlans + 1;
 //	for (int i = 1; i < noOfPlans + 1; i++)
 //	for (int i = 1; i < noOfPlans; i++)
@@ -3231,21 +3238,31 @@ int function_10() {
 						}
 						string[16]=0xFF;
 
-						//-------------------------SD card write-----------------------//
+						//-------------------------SD card write begin-----------------------//
 						SDcardWriteSeek("phase.txt", 17, (uint8_t *) string, seekCnt);
 						SDcardReadSeek("phase.txt", 350, 0);
+						//-------------------------SD card write end-----------------------//
 
+						/*-------write phase in flash begin---------*/
+						HAL_FLASH_Unlock();
+						Flash_Write(flashAdd, string, 17);
+						HAL_FLASH_Lock();
 
-						/*-------write Current day plan in eeprom begin----------*/
+						/*-------write phase in flash end-----------*/
+
+						/*-------write phase in eeprom begin----------*/
 						EEPROM_WriteArray(string,17,eepromAddress);
 						clearReadBytes();
 						clearStringBuffer();
 						EEPROM_ReadArray(string,17,eepromAddress);
+						/*-------write phase in eeprom end----------*/
+
+
 
 						/*----------increment the counter value--------------*/
-						seekCnt=seekCnt+17;
-
-                         eepromAddress= seekCnt;
+						seekCnt=seekCnt+17; //SD card counter
+                         eepromAddress= seekCnt; //eeprom Counter
+                         flashAdd=flashAdd+17; //Flash Counter
 
 						//--------------------------flash write------------------------//
 //						HAL_FLASH_Unlock();
@@ -3410,17 +3427,17 @@ void init4(void) {
 //function2();
 
 	}
-//	/*-----------for testing(begin)-------------------*/
-//	sTime.Hours = 0x0A; // current hour
+	/*-----------for testing(begin)-------------------*/
+//	sTime.Hours = 0x11; // current hour
 //	sTime.Minutes =0x1C ; // current min
-//	sDate.Date = aRxBuffer[signVal + 4]; // current date
-//	sDate.Month = aRxBuffer[signVal + 5]; // current month
+//	sDate.Date = 0x16;//aRxBuffer[signVal + 4]; // current date
+//	sDate.Month = 0x06;//aRxBuffer[signVal + 5]; // current month
 //	sDate.Year = 0x12;//aRxBuffer[signVal + 6];	// current year
 //
 //	HAL_RTC_SetTime(&hrtc, &sTime, FORMAT_BIN);
 //	sDate.WeekDay=0x06;
 //	HAL_RTC_SetDate(&hrtc, &sDate, FORMAT_BIN);
-//	/*-----------for testing(end)-------------------*/
+	/*-----------for testing(end)-------------------*/
 
 
 
@@ -3558,8 +3575,7 @@ clearPlanTimeBuffer();
 HAL_Delay(50);
 /*-------write Current day plan in eeprom begin----------*/
 /*---------incrementing the value of counter by 50 ------------*/
-//SDcardReadSeek("Cnt.txt", 5, 0);
-//eepromAddress=readBytes[0]+50;
+
 eepromAddress=4001;
 EEPROM_WriteArray(planDetailsArray,counterOfPlan,eepromAddress);
 //clearReadBytes();
@@ -3568,17 +3584,20 @@ EEPROM_WriteArray(planDetailsArray,counterOfPlan,eepromAddress);
 //clearPlanDetailsArrayBuffer();//------------------commented because eeprom was not available to enable eeprom do check getCurrentPlanTotalNoOfPhases();
 //EEPROM_ReadArray(planDetailsArray,349,eepromAddress);//------------------commented because eeprom was not available
 
-
-//EEPROM_ReadArray(readBytes,349,eepromAddress);
 /*-------write Current day plan in eeprom end----------*/
 
+/*--------write current day plan in flash---------*/
+  HAL_FLASH_Unlock();
+  Flash_Write(ADDR_FLASH_SECTOR_11,planDetailsArray,counterOfPlan);
+  HAL_FLASH_Lock();
+ /*--------write current day plan in flash---------*/
 
-/*-------write all phases in eeprom begin----------*/
-//EEPROM_WriteArray(phases,noOfPhase*16,counterOfPlan);
-//clearReadBytes();
-//EEPROM_ReadArray(readBytes,350,0);
-
-/*-------write all phases in eeprom end----------*/
+///*-------write all phases in eeprom begin----------*/
+////EEPROM_WriteArray(phases,noOfPhase*16,counterOfPlan);
+////clearReadBytes();
+////EEPROM_ReadArray(readBytes,350,0);
+//
+///*-------write all phases in eeprom end----------*/
 
 /*---------------getting the planID and mapID from mapDate.txt file----------- */
 //int mapCnt=noOfDateSlots+noOfDaySlots;
@@ -4048,45 +4067,46 @@ void countDown()
 
 		case 3:
 
-			Disp[0]=planS2GT+planS3GT+planS4GT+planS5GT+planA2GT+planA3GT+planA4GT+planA5GT;
+			Disp[0]=planS2GT+planS3GT+planS4GT+planS5GT+planA2GT+planA3GT+planA4GT+planA5GT+padestarianTime;
 			Disp[1]=planS2GT;
 			break;
 
 		case 4:
 			Disp[1]=planA2GT ;
-			Disp[2]=planA2GT;
+//			Disp[2]=planA2GT;
 			Disp[7]=0x08  ;
 	        break;
 
 		case 5:
 
-			Disp[1]=planS3GT+planS4GT+planS5GT+planA3GT+planA4GT +planA5GT;
+			Disp[1]=planS3GT+planS4GT+planS5GT+planA3GT+planA4GT+planA5GT+padestarianTime+planS1GT+planA1GT;
 			Disp[2]=planS3GT;
 		    Disp[7]=0x08  ;
 		    break;
 
 		case 6:
 			Disp[2]=planA3GT ;
-			Disp[3]=planA3GT;
+//			Disp[3]=planA3GT;
 			Disp[7]=0x08 ;
 			break;
 
 		case 7:
 
-			Disp[2]=planS4GT+planS5GT+planA4GT+planA5GT ;
+			Disp[2]=planS4GT+planS5GT+planA4GT+planA5GT+planS1GT+planA1GT+planA2GT+planS2GT+padestarianTime ;
 			Disp[3]=planS4GT;
 			Disp[7]=0x08  ;
 			break;
 
 		case 8:
 			Disp[3]=planA4GT ;
-			Disp[0]=planA4GT;
+//			Disp[0]=planA4GT;
 			Disp[7]=0x08  ;
 			break;
 
 		case 9:
 
-			Disp[3]=planS5GT+planA5GT ;
+			Disp[3]=planS5GT+planA5GT+padestarianTime+planA1GT+planS1GT+planA2GT+planS2GT
+			+planA3GT+planS3GT;
 			Disp[6]=planS5GT ;
 			Disp[7]=0x03  ;
 			break;
@@ -4101,7 +4121,7 @@ void countDown()
 
 	if (planMode==3) //signal with pedestrian
      {
-
+//        if(noOfSides==4)
 		switch(phase_No)
 		{
 	case 1: //side1 green
@@ -6483,9 +6503,9 @@ int function11N()   // check registration
 	frame[17] = '6';
 	frame[18] = '2';
 	frame[19] = '0';
-	frame[20] = '1';//'9';
-	frame[21] = '2';//'1';
-	frame[22] = '5';//'1';//'4';//'5';//'2';//
+	frame[20] = '9';//'1';
+	frame[21] = '1';//'2';
+	frame[22] = '5';//'1';
 
 	frame[23] = 1;
 	frame[24] = 1;
@@ -7717,8 +7737,8 @@ int function18(){
 				frame[1] = 126;
 				frame[2] = 0;
 				frame[3] = 14;
-				frame[4] = 15;//junctionId; // function no
-				frame[5] = 21;//programVersionNo; // junction no
+				frame[4] = junctionId; // function no
+				frame[5] = programVersionNo; // junction no
 				frame[6] = fileNo; // junction no
 				frame[7] = 0x12; // function no
 				frame[8] = 0x04;//noOfSides;  // plan no planOnHr
@@ -8717,6 +8737,7 @@ int seekCnt=0;
 int cnt1=0;
 int phaseId=0;
 int mapID=0;
+uint32_t flashAdd=ADDR_FLASH_SECTOR_10;
 //int ptr=0;
 /*----------get the current plan's , phaseMap from mapPhase.txt file-------- */
 for(int i=0;i<phaseMapCnt;i++)// current day no of plans
@@ -8763,8 +8784,8 @@ for(int j=0;j<totalNoOfPhasesInMapID;j++)// current day no of phases
 	for (int i=0;i<totalNoOfPhases;i++)// total no of phases
 	{
 //		/*----------read phase from SD card---------start----------*/
-		SDcardReadSeek("phase.txt", 17, seekCnt);
-		seekCnt=seekCnt+17;
+//		SDcardReadSeek("phase.txt", 17, seekCnt);
+//		seekCnt=seekCnt+17;
 //		/*----------read phase from SD card----------end-----------*/
 
 		/*-------read phase from eeprom-------start------*/
@@ -8773,6 +8794,17 @@ for(int j=0;j<totalNoOfPhasesInMapID;j++)// current day no of phases
 //		eepromAddress=eepromAddress+17;
 
 		/*--------read phase from eeprom-------end-------*/
+
+		/*--------read phase from flash start-----------*/
+		/*--------read current day plan in flash---------*/
+		  HAL_FLASH_Unlock();
+		  Flash_ReadByte(flashAdd,readBytes,17);
+		  flashAdd=flashAdd+17;
+		  HAL_FLASH_Lock();
+		 /*--------read current day plan in flash---------*/
+
+		/*--------read phase from flash end------------*/
+
 		if(phaseId==readBytes[3]){
 			for(int i=0;i<15;i++)
 			{

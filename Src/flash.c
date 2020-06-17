@@ -115,6 +115,7 @@ void flash_Erase()
 	                  HAL_FLASH_Unlock();
 	                  FLASH_WaitForLastOperation(100);
 	                  FLASH_Erase_Sector(FLASH_SECTOR_11, FLASH_VOLTAGE_RANGE_3);
+	                  FLASH_Erase_Sector(FLASH_SECTOR_10, FLASH_VOLTAGE_RANGE_3);
 	                  HAL_FLASH_Lock();
 }
 
