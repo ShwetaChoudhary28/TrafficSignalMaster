@@ -1180,6 +1180,7 @@ Discarded input sections
                 0x00000000        0x4 Src\main.o
  .bss.commFlag  0x00000000        0x4 Src\main.o
  .bss.sec       0x00000000        0x4 Src\main.o
+ .data.check    0x00000000        0x4 Src\main.o
  .data.dataToWrite
                 0x00000000        0x1 Src\main.o
  .text          0x00000000        0x0 Src\modem.o
@@ -2136,59 +2137,59 @@ LOAD c:/program files (x86)/atollic/truestudio for stm32 9.3.0/armtools/bin/../l
                 0x08007664      0x180 Src\modem.o
                 0x08007664                function18
  .text.currentDayAllPlan
-                0x080077e4      0x170 Src\modem.o
+                0x080077e4      0x174 Src\modem.o
                 0x080077e4                currentDayAllPlan
  .text.getCurrentPlanTotalNoOfPhases
-                0x08007954      0x138 Src\modem.o
-                0x08007954                getCurrentPlanTotalNoOfPhases
+                0x08007958      0x138 Src\modem.o
+                0x08007958                getCurrentPlanTotalNoOfPhases
  .text.getCurrentPlanPhases
-                0x08007a8c      0x108 Src\modem.o
-                0x08007a8c                getCurrentPlanPhases
+                0x08007a90      0x108 Src\modem.o
+                0x08007a90                getCurrentPlanPhases
  .text.DetectChange
-                0x08007b94       0x4c Src\modem.o
-                0x08007b94                DetectChange
+                0x08007b98       0x4c Src\modem.o
+                0x08007b98                DetectChange
  .text.sideChange
-                0x08007be0       0xb8 Src\modem.o
-                0x08007be0                sideChange
+                0x08007be4       0xb8 Src\modem.o
+                0x08007be4                sideChange
  .text.clearPrimaryAndSecByte
-                0x08007c98       0x38 Src\modem.o
-                0x08007c98                clearPrimaryAndSecByte
+                0x08007c9c       0x38 Src\modem.o
+                0x08007c9c                clearPrimaryAndSecByte
  .text.function8
-                0x08007cd0      0x234 Src\modem.o
-                0x08007cd0                function8
+                0x08007cd4      0x234 Src\modem.o
+                0x08007cd4                function8
  .text.findSide
-                0x08007f04       0xa8 Src\modem.o
-                0x08007f04                findSide
+                0x08007f08       0xa8 Src\modem.o
+                0x08007f08                findSide
  .text.resetVariables
-                0x08007fac       0xa0 Src\modem.o
-                0x08007fac                resetVariables
+                0x08007fb0       0xa8 Src\modem.o
+                0x08007fb0                resetVariables
  .text.program3
-                0x0800804c      0x1f8 Src\modem.o
-                0x0800804c                program3
+                0x08008058      0x1f8 Src\modem.o
+                0x08008058                program3
  .text.espCommunication
-                0x08008244      0x1a0 Src\modem.o
-                0x08008244                espCommunication
+                0x08008250      0x1a0 Src\modem.o
+                0x08008250                espCommunication
  .text.BLECommunication
-                0x080083e4      0x1a0 Src\modem.o
-                0x080083e4                BLECommunication
+                0x080083f0      0x1a0 Src\modem.o
+                0x080083f0                BLECommunication
  .text.extractSlaveInfo
-                0x08008584       0x2c Src\modem.o
-                0x08008584                extractSlaveInfo
+                0x08008590       0x2c Src\modem.o
+                0x08008590                extractSlaveInfo
  .text.populatePrimaryHVSecondaryHV
-                0x080085b0       0x7c Src\modem.o
-                0x080085b0                populatePrimaryHVSecondaryHV
+                0x080085bc       0x7c Src\modem.o
+                0x080085bc                populatePrimaryHVSecondaryHV
  .text.phaseInfoData
-                0x0800862c      0x214 Src\modem.o
-                0x0800862c                phaseInfoData
- .text.signal   0x08008840       0xe4 Src\modem.o
-                0x08008840                signal
- .text.blinker  0x08008924      0x154 Src\modem.o
-                0x08008924                blinker
+                0x08008638      0x214 Src\modem.o
+                0x08008638                phaseInfoData
+ .text.signal   0x0800884c       0xe4 Src\modem.o
+                0x0800884c                signal
+ .text.blinker  0x08008930      0x144 Src\modem.o
+                0x08008930                blinker
  .text.planDetailSD
-                0x08008a78      0x124 Src\modem.o
-                0x08008a78                planDetailSD
- .text.init4    0x08008b9c      0x32c Src\modem.o
-                0x08008b9c                init4
+                0x08008a74      0x124 Src\modem.o
+                0x08008a74                planDetailSD
+ .text.init4    0x08008b98      0x330 Src\modem.o
+                0x08008b98                init4
  .text.clearStringNsign
                 0x08008ec8       0x1c Src\msgParse.o
                 0x08008ec8                clearStringNsign
@@ -3021,7 +3022,7 @@ LOAD c:/program files (x86)/atollic/truestudio for stm32 9.3.0/armtools/bin/../l
                 0x000008ab       0x22 c:/program files (x86)/atollic/truestudio for stm32 9.3.0/armtools/bin/../lib/gcc/arm-atollic-eabi/6.3.1/armv7e-m/fpu/crtn.o
 OUTPUT(Master1.3.elf elf32-littlearm)
 
-.debug_info     0x00000000    0x2a173
+.debug_info     0x00000000    0x2a18c
  .debug_info    0x00000000      0xa35 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_info    0x00000a35      0xf39 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
  .debug_info    0x0000196e      0x41e Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_crc.o
@@ -3047,14 +3048,14 @@ OUTPUT(Master1.3.elf elf32-littlearm)
  .debug_info    0x00019b68     0x16bb Src\flash.o
  .debug_info    0x0001b223      0x5eb Src\interrupt.o
  .debug_info    0x0001b80e     0x11e3 Src\laser.o
- .debug_info    0x0001c9f1     0x2e6c Src\main.o
- .debug_info    0x0001f85d     0x6ebf Src\modem.o
- .debug_info    0x0002671c      0x21f Src\msgParse.o
- .debug_info    0x0002693b      0xee9 Src\sd_diskio.o
- .debug_info    0x00027824     0x1a9c Src\stm32f4xx_hal_msp.o
- .debug_info    0x000292c0      0x909 Src\stm32f4xx_it.o
- .debug_info    0x00029bc9      0x50a Src\system_stm32f4xx.o
- .debug_info    0x0002a0d3       0xa0 startup\startup_stm32f407xx.o
+ .debug_info    0x0001c9f1     0x2e7d Src\main.o
+ .debug_info    0x0001f86e     0x6ec7 Src\modem.o
+ .debug_info    0x00026735      0x21f Src\msgParse.o
+ .debug_info    0x00026954      0xee9 Src\sd_diskio.o
+ .debug_info    0x0002783d     0x1a9c Src\stm32f4xx_hal_msp.o
+ .debug_info    0x000292d9      0x909 Src\stm32f4xx_it.o
+ .debug_info    0x00029be2      0x50a Src\system_stm32f4xx.o
+ .debug_info    0x0002a0ec       0xa0 startup\startup_stm32f407xx.o
 
 .debug_abbrev   0x00000000     0x4f61
  .debug_abbrev  0x00000000      0x24e Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
@@ -3091,7 +3092,7 @@ OUTPUT(Master1.3.elf elf32-littlearm)
  .debug_abbrev  0x00004e41      0x10e Src\system_stm32f4xx.o
  .debug_abbrev  0x00004f4f       0x12 startup\startup_stm32f407xx.o
 
-.debug_loc      0x00000000    0x12b5b
+.debug_loc      0x00000000    0x12b8f
  .debug_loc     0x00000000      0x11b Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_loc     0x0000011b      0x4fb Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
  .debug_loc     0x00000616      0x1d5 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_crc.o
@@ -3114,11 +3115,11 @@ OUTPUT(Master1.3.elf elf32-littlearm)
  .debug_loc     0x0000effb      0x12e Src\eeprom.o
  .debug_loc     0x0000f129      0x162 Src\flash.o
  .debug_loc     0x0000f28b      0x215 Src\laser.o
- .debug_loc     0x0000f4a0     0x2f5f Src\modem.o
- .debug_loc     0x000123ff       0xfd Src\msgParse.o
- .debug_loc     0x000124fc      0x3a5 Src\sd_diskio.o
- .debug_loc     0x000128a1      0x19e Src\stm32f4xx_hal_msp.o
- .debug_loc     0x00012a3f      0x11c Src\system_stm32f4xx.o
+ .debug_loc     0x0000f4a0     0x2f93 Src\modem.o
+ .debug_loc     0x00012433       0xfd Src\msgParse.o
+ .debug_loc     0x00012530      0x3a5 Src\sd_diskio.o
+ .debug_loc     0x000128d5      0x19e Src\stm32f4xx_hal_msp.o
+ .debug_loc     0x00012a73      0x11c Src\system_stm32f4xx.o
 
 .debug_aranges  0x00000000     0x1528
  .debug_aranges
@@ -3223,7 +3224,7 @@ OUTPUT(Master1.3.elf elf32-littlearm)
  .debug_ranges  0x00002380       0x18 Src\system_stm32f4xx.o
  .debug_ranges  0x00002398       0x20 startup\startup_stm32f407xx.o
 
-.debug_line     0x00000000     0xd649
+.debug_line     0x00000000     0xd647
  .debug_line    0x00000000      0x42e Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_line    0x0000042e      0x456 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
  .debug_line    0x00000884      0x2b3 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_crc.o
@@ -3250,15 +3251,15 @@ OUTPUT(Master1.3.elf elf32-littlearm)
  .debug_line    0x00009216      0x20e Src\interrupt.o
  .debug_line    0x00009424      0x5fe Src\laser.o
  .debug_line    0x00009a22      0x5ee Src\main.o
- .debug_line    0x0000a010     0x26b6 Src\modem.o
- .debug_line    0x0000c6c6      0x1d8 Src\msgParse.o
- .debug_line    0x0000c89e      0x3cf Src\sd_diskio.o
- .debug_line    0x0000cc6d      0x45b Src\stm32f4xx_hal_msp.o
- .debug_line    0x0000d0c8      0x324 Src\stm32f4xx_it.o
- .debug_line    0x0000d3ec      0x1de Src\system_stm32f4xx.o
- .debug_line    0x0000d5ca       0x7f startup\startup_stm32f407xx.o
+ .debug_line    0x0000a010     0x26b4 Src\modem.o
+ .debug_line    0x0000c6c4      0x1d8 Src\msgParse.o
+ .debug_line    0x0000c89c      0x3cf Src\sd_diskio.o
+ .debug_line    0x0000cc6b      0x45b Src\stm32f4xx_hal_msp.o
+ .debug_line    0x0000d0c6      0x324 Src\stm32f4xx_it.o
+ .debug_line    0x0000d3ea      0x1de Src\system_stm32f4xx.o
+ .debug_line    0x0000d5c8       0x7f startup\startup_stm32f407xx.o
 
-.debug_str      0x00000000     0x6cf4
+.debug_str      0x00000000     0x6cfa
  .debug_str     0x00000000      0xb82 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
                                 0xbf5 (size before relaxing)
  .debug_str     0x00000b82      0x4a8 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
@@ -3309,19 +3310,19 @@ OUTPUT(Master1.3.elf elf32-littlearm)
                                 0x68f (size before relaxing)
  .debug_str     0x0000553e      0x288 Src\laser.o
                                 0xa54 (size before relaxing)
- .debug_str     0x000057c6      0x2ed Src\main.o
-                               0x1d02 (size before relaxing)
- .debug_str     0x00005ab3      0xfee Src\modem.o
-                               0x23a6 (size before relaxing)
- .debug_str     0x00006aa1       0x61 Src\msgParse.o
+ .debug_str     0x000057c6      0x2f3 Src\main.o
+                               0x1d08 (size before relaxing)
+ .debug_str     0x00005ab9      0xfee Src\modem.o
+                               0x23ac (size before relaxing)
+ .debug_str     0x00006aa7       0x61 Src\msgParse.o
                                 0x2a7 (size before relaxing)
- .debug_str     0x00006b02       0x59 Src\sd_diskio.o
+ .debug_str     0x00006b08       0x59 Src\sd_diskio.o
                                 0x83a (size before relaxing)
- .debug_str     0x00006b5b       0x1b Src\stm32f4xx_hal_msp.o
+ .debug_str     0x00006b61       0x1b Src\stm32f4xx_hal_msp.o
                                0x1505 (size before relaxing)
- .debug_str     0x00006b76      0x139 Src\stm32f4xx_it.o
+ .debug_str     0x00006b7c      0x139 Src\stm32f4xx_it.o
                                 0x906 (size before relaxing)
- .debug_str     0x00006caf       0x45 Src\system_stm32f4xx.o
+ .debug_str     0x00006cb5       0x45 Src\system_stm32f4xx.o
                                 0x3d2 (size before relaxing)
 
 .comment        0x00000000       0x7c

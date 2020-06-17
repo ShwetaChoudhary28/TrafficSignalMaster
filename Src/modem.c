@@ -36,7 +36,7 @@ int clearanceMode;
 int serverMode;
 uint8_t fileNo = 111;
 extern int signVal;
-uint8_t string[125]; // string array to store messege received in uart
+uint8_t string[130]; // string array to store messege received in uart
 uint8_t junctionId = 111;
 uint8_t noOfDateSlots=0;
 uint8_t dateSlotNo=0;
@@ -248,7 +248,7 @@ extern void clearingRecBuffer();
  char sideNo1_1,sideNo2_1,sideNo3_1,sideNo4_1;
 
 
-
+extern int check;
 /*------------------------functions------------------------------*/
 void clearBuffer();
 void transmit();
@@ -303,7 +303,7 @@ int function_10_2();
 int function3();
 extern short msgParse(uint8_t *SPtr ,char *sigPtr , short pointer );
 int signal();
-void blinker();
+int blinker();
 void phaseInfoAddress();
 int phaseInfoData(uint8_t planNo,uint8_t phaseNo);
 extern void transferRecValuesToData(int cnt);
@@ -2645,7 +2645,7 @@ void intToChar(uint8_t dat) {
 
 void clearSecondBuffer() {
 	int x = 0;
-	for (; x < 50; x++) {
+	for (; x < 16; x++) {
 		second[x] = 0x00;
 
 	}
@@ -2672,14 +2672,14 @@ void trafficDisplay2Value() {
 
 void clearFirstBuffer() {
 	int x = 0;
-	for (; x < 50; x++) {
+	for (; x < 16; x++) {
 		first[x] = 0x00;
 
 	}
 }
 void clearData1Buffer() {
 	int x = 0;
-	for (; x < 50; x++) {
+	for (; x < 16; x++) {
 		data1[x] = 0x00;
 
 	}
@@ -3332,7 +3332,7 @@ void init4(void) {
 
 
      isReprogrammed=0;
-
+     resetVariables();
 /*---------------------SD Card-----------------------*/
 
      clearReadBytes();
@@ -3427,16 +3427,20 @@ void init4(void) {
 //function2();
 
 	}
+
 	/*-----------for testing(begin)-------------------*/
-//	sTime.Hours = 0x11; // current hour
-//	sTime.Minutes =0x1C ; // current min
-//	sDate.Date = 0x16;//aRxBuffer[signVal + 4]; // current date
+//	if(check==1){
+//	sTime.Hours = 0x17; // current hour
+//	sTime.Minutes =0x39 ; // current min
+//	sDate.Date = 0x11;//aRxBuffer[signVal + 4]; // current date
 //	sDate.Month = 0x06;//aRxBuffer[signVal + 5]; // current month
-//	sDate.Year = 0x12;//aRxBuffer[signVal + 6];	// current year
+//	sDate.Year = 0x14;//aRxBuffer[signVal + 6];	// current year
 //
 //	HAL_RTC_SetTime(&hrtc, &sTime, FORMAT_BIN);
 //	sDate.WeekDay=0x06;
 //	HAL_RTC_SetDate(&hrtc, &sDate, FORMAT_BIN);
+//	check++;
+//	}
 	/*-----------for testing(end)-------------------*/
 
 
@@ -3692,7 +3696,7 @@ break;
 
 //if(!(i==0))
 //{
-planDetailSD(planNo);
+planDetailSD(planNo); //planNo was used earlier but now it do not have any utilization.
 //}
 
 }
@@ -5748,7 +5752,7 @@ int espCommunication(){
 
  }
 
-void blinker(){
+int blinker(){
 int on=0;
 	while(1)
 	{
@@ -5819,25 +5823,28 @@ int on=0;
 	/*----------------------get date---------------------*/
 	 HAL_RTC_GetDate(&hrtc, &sDate, FORMAT_BIN);
 	/*---------------Update RTC from GNSS Module-------begin------*/
-	if(!(sDate.Date == DateLast))
-	{
-			getDateAndTimeFromGPS();
-
-	}
+//	if(!(sDate.Date == DateLast))
+//	{
+//			getDateAndTimeFromGPS();
+//
+//	}
 	/*----------------Update RTC from GNSS Module-------- end-------- */
 	if (sTime.Hours==(planOffHr)){
 		if (sTime.Minutes>planOffM)
 		{
-			break ;
+			returnMode=1;
+			return 1;
 		}
 	}
 		if (sTime.Hours>(planOffHr))
 		{
-			break ;
+			returnMode=1;
+			return 1;
 		}
 			if (sTime.Hours<(planOnHr))
 			{
-			break ;
+				returnMode=1;
+				return 1;
 			}
 
 			if(changeMode==1){
@@ -8630,7 +8637,7 @@ if(!((planID==0x00)&&(mapID==0x00)))
 {
 //for(int i=1;i<noOfPlansN+1;i++)
 // if((dateID==readBytes[0])||(dayID ==readBytes[1]))
-
+	counter=0;
 if(enterLoop==1)
 for(int i=1;i<totalNoOfMap+1;i++)
 {
@@ -9413,6 +9420,7 @@ void resetVariables()
 	padestarianTime = 10;
 	phaseMapCnt=0;
 	phaseMapCnt1=0;//total no of phases in phase.txt
+    incCnt=0;
 //	isReprogrammed=0;
 
 }
