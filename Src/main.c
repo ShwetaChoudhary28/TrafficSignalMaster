@@ -309,7 +309,7 @@ int main(void)
 
 //getDateAndTimeFromGPS();
 //         	      populatePrimaryHVHorizontalHV();
-
+//         	      program3();
   /* USER CODE END 2 */
 
   /* Infinite loop */

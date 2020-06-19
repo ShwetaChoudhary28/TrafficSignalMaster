@@ -130,7 +130,7 @@ uint8_t GPSSec;
 int laserOn = 0 ;
 int seekCntForDayAndDate;
 int noOfPhasesInMapID=0;
-uint8_t phaseMapIDList[200];
+uint8_t phaseMapIDList[500];
 uint8_t phaseList[500];
 uint8_t currentPlanPhases[250];
 uint8_t Color[100];
@@ -2075,7 +2075,7 @@ int planDetailSD(int planNo) {
 //		totalPhase=noOfPhase;
 	/*--------------after changes of day and date---------------*/
 	incCnt=incCnt-19;
-	plan_ID = planDetailsArray[incCnt+1];
+	plan_ID = planDetailsArray[incCnt];
 	planOnHr = planDetailsArray[incCnt+2];
 	planOnM = planDetailsArray[incCnt+3];
 	planOffHr = planDetailsArray[incCnt+4];
@@ -2301,9 +2301,11 @@ void program3() {
 	f_unlink ("phase.txt");
 	f_unlink ("mapPhase.txt");
 	f_unlink ("SlaveD.txt");
+	f_unlink ("prog.txt");
+
 	/*----------delete the existing file from SD card before new programming (END)---- */
 	/*----------delete the existing data from flash-begin-------------*/
-	flash_Erase();
+//	flash_Erase();
 	/*----------delete the existing data from flash-end-------------*/
     /*----------Programming -------------*/
 	while (1) {
@@ -3132,7 +3134,7 @@ int function_10() {
 //	junctionId=1;
 //	programVersionNo=71;
 	int seekCnt=0;
-    uint32_t flashAdd=ADDR_FLASH_SECTOR_10;
+//    uint32_t flashAdd=ADDR_FLASH_SECTOR_10;
 //	noOfPlans = noOfPlans + 1;
 //	for (int i = 1; i < noOfPlans + 1; i++)
 //	for (int i = 1; i < noOfPlans; i++)
@@ -3172,17 +3174,17 @@ int function_10() {
 			frame[8] = planNo;									//planNo
 			frame[9] = planID;									//phaseNo
 			frame[10] = phaseNo;
-			frame[11] = '1';
-			frame[12] = '1';
-			frame[13] = '1';
-			frame[14] = '1';
-			frame[15] = '1';
-			frame[16] = '1';
-			frame[17] = '1';
-			frame[18] = '1';
-			frame[19] = '1';									//'1'
-			frame[20] = '1';									//'0' ; //'5' ;
-			frame[21] = '1';							// '2' ;//'9' ;//'1' ;
+			frame[11] = 1;
+			frame[12] = 1;
+			frame[13] = 1;
+			frame[14] = 1;
+			frame[15] = 1;
+			frame[16] = 1;
+			frame[17] = 1;
+			frame[18] = 1;
+			frame[19] = 1;									//'1'
+			frame[20] = 1;									//'0' ; //'5' ;
+			frame[21] = 1;							// '2' ;//'9' ;//'1' ;
 			frame[22] = 0xFF - crcApiResponse();						//CRC
 			frame[23] = 0x7D;								// ending delimeter
 			frame[24] = 0x7D;								//ending delimeter
@@ -3210,6 +3212,8 @@ int function_10() {
 //								break;
 //			}
 			signVal=4;
+			if(aRxBuffer[37]==0)
+			aRxBuffer[37]=123;
 			if (!(signVal == 0))
 			{
 					if (aRxBuffer[signVal + (aRxBuffer[signVal + 1]) + 2]
@@ -3244,9 +3248,9 @@ int function_10() {
 						//-------------------------SD card write end-----------------------//
 
 						/*-------write phase in flash begin---------*/
-						HAL_FLASH_Unlock();
-						Flash_Write(flashAdd, string, 17);
-						HAL_FLASH_Lock();
+//						HAL_FLASH_Unlock();
+//						Flash_Write(flashAdd, string, 17);
+//						HAL_FLASH_Lock();
 
 						/*-------write phase in flash end-----------*/
 
@@ -3262,7 +3266,7 @@ int function_10() {
 						/*----------increment the counter value--------------*/
 						seekCnt=seekCnt+17; //SD card counter
                          eepromAddress= seekCnt; //eeprom Counter
-                         flashAdd=flashAdd+17; //Flash Counter
+//                         flashAdd=flashAdd+17; //Flash Counter
 
 						//--------------------------flash write------------------------//
 //						HAL_FLASH_Unlock();
@@ -3429,18 +3433,18 @@ void init4(void) {
 	}
 
 	/*-----------for testing(begin)-------------------*/
-//	if(check==1){
-//	sTime.Hours = 0x17; // current hour
-//	sTime.Minutes =0x39 ; // current min
-//	sDate.Date = 0x11;//aRxBuffer[signVal + 4]; // current date
-//	sDate.Month = 0x06;//aRxBuffer[signVal + 5]; // current month
-//	sDate.Year = 0x14;//aRxBuffer[signVal + 6];	// current year
-//
-//	HAL_RTC_SetTime(&hrtc, &sTime, FORMAT_BIN);
-//	sDate.WeekDay=0x06;
-//	HAL_RTC_SetDate(&hrtc, &sDate, FORMAT_BIN);
-//	check++;
-//	}
+	if(check==1){
+	sTime.Hours = 0x08; // current hour
+	sTime.Minutes =0x1D ; // current min
+	sDate.Date = 0x12;//aRxBuffer[signVal + 4]; // current date
+	sDate.Month = 0x06;//aRxBuffer[signVal + 5]; // current month
+	sDate.Year = 0x14;//aRxBuffer[signVal + 6];	// current year
+
+	HAL_RTC_SetTime(&hrtc, &sTime, FORMAT_BIN);
+	sDate.WeekDay=0x06;
+	HAL_RTC_SetDate(&hrtc, &sDate, FORMAT_BIN);
+	check++;
+	}
 	/*-----------for testing(end)-------------------*/
 
 
@@ -3458,7 +3462,7 @@ void init4(void) {
 
   	}
 
-
+//  	function9();
 /*------------------checks the current date with dateSlot or with daySlot-------------*/
   	/*------------------checking dateSlot---------date.txt-----*/
   	dateID = 0xFE;
@@ -3591,9 +3595,9 @@ EEPROM_WriteArray(planDetailsArray,counterOfPlan,eepromAddress);
 /*-------write Current day plan in eeprom end----------*/
 
 /*--------write current day plan in flash---------*/
-  HAL_FLASH_Unlock();
-  Flash_Write(ADDR_FLASH_SECTOR_11,planDetailsArray,counterOfPlan);
-  HAL_FLASH_Lock();
+//  HAL_FLASH_Unlock();
+//  Flash_Write(ADDR_FLASH_SECTOR_11,planDetailsArray,counterOfPlan);
+//  HAL_FLASH_Lock();
  /*--------write current day plan in flash---------*/
 
 ///*-------write all phases in eeprom begin----------*/
@@ -3613,14 +3617,14 @@ EEPROM_WriteArray(planDetailsArray,counterOfPlan,eepromAddress);
 //if(dateID)
 //while()
 
-for(int i=1;i<noOfPlansN+1;i++)
+for(int icntP=1;icntP<noOfPlansN+1;icntP++)
 {
 
 	  for(int j=0;j<4;j++){
 	        planTime[j]= planDetailsArray[incCnt+2+j];
 
 	       }
-	       incCnt=incCnt+19;
+
 //	SDcardReadSeek("mapDate.txt", 100, cnt);
 //	cnt=cnt+6;
 //	if((dateID==readBytes[0])||(dayID ==readBytes[1])){
@@ -3652,7 +3656,7 @@ for(int i=1;i<noOfPlansN+1;i++)
 //
 //}
 
-
+      incCnt=incCnt+19;
 /*------------------Comparing with OFF Time------------------------*/
 if (sTime.Hours>planTime[2])
 {
@@ -3661,12 +3665,19 @@ continue;
 /*------------------Comparing with OFF Time------------------------*/
 if (sTime.Hours==planTime[2])
 {
-if   (sTime.Minutes < planTime[1])
-{
-	   planNo=i;
-	   break;
-	 	 }
-else if(sTime.Minutes > planTime[1])
+	if   (sTime.Minutes < planTime[3])
+//	if   (sTime.Minutes > planTime[1])
+	{
+		planNo=icntP;
+		 break;
+	}
+
+//if   (sTime.Minutes < planTime[1])
+//{
+//	   planNo=icntP;
+//	   break;
+//	 	 }
+else if (sTime.Minutes > planTime[3])
 {
 	continue;
 }
@@ -3676,7 +3687,7 @@ else if(sTime.Minutes > planTime[1])
 /*------------------Comparing with ON Time------------------------*/
 if (sTime.Hours==planTime[0])
 {if (!(sTime.Minutes <= planTime[1]))
-planNo=i;
+planNo=icntP;
 break;
 }
 
@@ -3685,7 +3696,7 @@ break;
 /*------------------Comparing with ON Time------------------------*/
   if (sTime.Hours>planTime[0])
 	   if (sTime.Hours< planTime[2]){
-			   planNo=i;
+			   planNo=icntP;
 			    break;
 
 
@@ -3694,10 +3705,10 @@ break;
 
 }
 
-//if(!(i==0))
-//{
+if(!(planNo==0))
+{
 planDetailSD(planNo); //planNo was used earlier but now it do not have any utilization.
-//}
+}
 
 }
 ////}
@@ -6510,8 +6521,8 @@ int function11N()   // check registration
 	frame[17] = '6';
 	frame[18] = '2';
 	frame[19] = '0';
-	frame[20] = '9';//'1';
-	frame[21] = '1';//'2';
+	frame[20] = '1';//'1';
+	frame[21] = '2';//'2';
 	frame[22] = '5';//'1';
 
 	frame[23] = 1;
@@ -7182,18 +7193,18 @@ int function15(void) {
 				frame[8] = dateID;  // plan no planOnHr
 				frame[9] = i;  // plan no
 
-				frame[10] = '1';
-				frame[11] = '1';
-				frame[12] = '1';
-				frame[13] = '1';
-				frame[14] = '1';
-				frame[15] = '1';
-				frame[16] = '1';
-				frame[17] = '1';
-				frame[18] = '1';  //'1'
-				frame[19] = '1';  //'0' ; //'5' ;
-				frame[20] = '1';  // '2' ;//'9' ;//'1' ;
-				frame[21] = '1';  // '2' ;//'9' ;//'1' ;
+				frame[10] = 1;
+				frame[11] = 1;
+				frame[12] = 1;
+				frame[13] = 1;
+				frame[14] = 1;
+				frame[15] = 1;
+				frame[16] = 1;
+				frame[17] = 1;
+				frame[18] = 1;  //'1'
+				frame[19] = 1;  //'0' ; //'5' ;
+				frame[20] = 1;  // '2' ;//'9' ;//'1' ;
+				frame[21] = 1;  // '2' ;//'9' ;//'1' ;
 
 				frame[22] = 0xFF - crcApi();  // junction no
 				frame[23] = 125;
@@ -7383,18 +7394,18 @@ int function16(void) {
 				frame[8] = dayID;  // plan no planOnHr
 				frame[9] = i;  // plan no
 
-				frame[10] = '0';
-				frame[11] = '0';
-				frame[12] = '0';
-				frame[13] = '0';
-				frame[14] = '0';
-				frame[15] = '0';
-				frame[16] = '0';
-				frame[17] = '0';
-				frame[18] = '0';  //'1'
-				frame[19] = '0';  //'0' ; //'5' ;
-				frame[20] = '0';  // '2' ;//'9' ;//'1' ;
-				frame[21] = '0';  // '2' ;//'9' ;//'1' ;
+				frame[10] = 1;
+				frame[11] = 1;
+				frame[12] = 1;
+				frame[13] = 1;
+				frame[14] = 1;
+				frame[15] = 1;
+				frame[16] = 1;
+				frame[17] = 1;
+				frame[18] = 1;  //'1'
+				frame[19] = 1;  //'0' ; //'5' ;
+				frame[20] = 1;  // '2' ;//'9' ;//'1' ;
+				frame[21] = 1;  // '2' ;//'9' ;//'1' ;
 
 				frame[22] = 0xFF - crcApi();  // junction no
 				frame[23] = 125;
@@ -7589,18 +7600,18 @@ int function17(void) {
 				frame[8] = map_ID;  // plan no planOnHr
 				frame[9] = i;  // plan no
 
-				frame[10] = 0x01;
-				frame[11] = 0x01;
-				frame[12] = 0x01;
-				frame[13] = 0x01;
-				frame[14] = 0x01;
-				frame[15] = 0x01;
-				frame[16] = 0x01;
-				frame[17] = 0x01;
-				frame[18] = 0x01;  //'1'
-				frame[19] = 0x01;  //'0' ; //'5' ;
-				frame[20] = 0x01;  // '2' ;//'9' ;//'1' ;
-				frame[21] = 0x01;  // '2' ;//'9' ;//'1' ;
+				frame[10] = 1;
+				frame[11] = 1;
+				frame[12] = 1;
+				frame[13] = 1;
+				frame[14] = 1;
+				frame[15] = 1;
+				frame[16] = 1;
+				frame[17] = 1;
+				frame[18] = 1;  //'1'
+				frame[19] = 1;  //'0' ; //'5' ;
+				frame[20] = 1;  // '2' ;//'9' ;//'1' ;
+				frame[21] = 1;  // '2' ;//'9' ;//'1' ;
 
 				frame[22] = 0xFF - crcApi();  // junction no
 				frame[23] = 125;
@@ -8592,6 +8603,7 @@ clearPlanDetailsArrayBuffer();
 for(int i=1;i<totalNoOfMap+1;i++){
 clearReadBytes();
 SDcardReadSeek("mapDate.txt", 7, cnt);
+//SDcardReadSeek("mapDate.txt", 100, 0);
 cnt=cnt+7;
 phaseMapCnt2=readBytes[5];
 phaseMapCnt1=phaseMapCnt1+phaseMapCnt2;
@@ -8791,8 +8803,8 @@ for(int j=0;j<totalNoOfPhasesInMapID;j++)// current day no of phases
 	for (int i=0;i<totalNoOfPhases;i++)// total no of phases
 	{
 //		/*----------read phase from SD card---------start----------*/
-//		SDcardReadSeek("phase.txt", 17, seekCnt);
-//		seekCnt=seekCnt+17;
+		SDcardReadSeek("phase.txt", 17, seekCnt);
+		seekCnt=seekCnt+17;
 //		/*----------read phase from SD card----------end-----------*/
 
 		/*-------read phase from eeprom-------start------*/
@@ -8804,10 +8816,10 @@ for(int j=0;j<totalNoOfPhasesInMapID;j++)// current day no of phases
 
 		/*--------read phase from flash start-----------*/
 		/*--------read current day plan in flash---------*/
-		  HAL_FLASH_Unlock();
-		  Flash_ReadByte(flashAdd,readBytes,17);
-		  flashAdd=flashAdd+17;
-		  HAL_FLASH_Lock();
+//		  HAL_FLASH_Unlock();
+//		  Flash_ReadByte(flashAdd,readBytes,17);
+//		  flashAdd=flashAdd+17;
+//		  HAL_FLASH_Lock();
 		 /*--------read current day plan in flash---------*/
 
 		/*--------read phase from flash end------------*/
@@ -8897,7 +8909,7 @@ void getCurrentPlanPhases()
 
 
 
-	for(int i=0;i<phaseMapCnt;i++)// current day no of plans
+	for(int ic=0;ic<phaseMapCnt;ic++)// current day no of plans
 	{
 		if(plan_ID==phaseMapArray[cnt+2])
 		{
